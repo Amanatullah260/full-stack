@@ -1,0 +1,360 @@
+<!--The content below is only a placeholder and can be replaced.-->
+<div style="text-align:center">
+  <h1>
+    Welcome to {{ title }}!
+    {{message}}
+    </h1>
+    <img width="300" alt="Angular logo" src="data:image/svg+xml;based64,PHN2ZyB4bv";
+  </div>
+
+  <!--<app-welcome></app-welcome>
+
+  <app-login></app-login>
+
+  <div>Component Content</div>
+
+  <router-outlet></router-outlet>
+  
+#list.todos.component.html
+
+<table border="1">
+    <caption>My Todo's</caption>
+    <thead>
+        <tr>
+            <th>Description</th>
+            <th>Target Date</th>
+            <th>is Completed?</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- for (Todo: todos) {  -->
+            <tr *ngFor="let todo of todos">
+                <td>{{todos.description}}</td>
+                <td>{{todo.targetDate  | date}}</td>
+                <td>{{todo.done}}</td>
+            </tr>
+            <!---->
+    </tbody>
+
+
+#index.html
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>My Todos Application</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+</head>
+<body>
+  <app-root></app-root>
+  <!-- <div>Index HTML Content</div>div> -->
+</body>
+</html>
+
+
+#list.tyodos.component.ts
+import { Component, OnInit } from '@angular/core';
+
+ export class Todo {
+   constructor(
+     public id: number,
+     public description
+   )
+ }
+
+@Component({
+  selector: 'app-list-todos',
+  templateUrl: './list-todos.component.html',
+  styleUrls: ['./list-todos.component.css']
+})
+export class ListTodosComponent implements OnInit {
+  todos = [
+    new Todo(1, 'Learn to Dance', false, new Date ) 
+    new Todo(2, 'Learn to Dance', true, new Date )
+    {id : 1, description :},
+    {id : 2, description : 'Become an Expert at Angular'},
+    {id : 3, description : 'Visit India'}
+  ]
+
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+}
+
+
+#login component.ts
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-login',
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.css']
+})
+export class LoginComponent implements OnInit {
+
+  username = "in28minutes"
+  password = ''
+  invalidLogin = false
+
+  //Router
+  //Angular.giveMeRouter
+  //Dependency Injection
+
+  constructor(router: Router) { }
+
+  ngOnInit(): void {
+  }
+
+handleLogin() {
+  //console.log(this.username);
+  if(this.username==="in28minutes" && this.password ==="dummy") {
+    this.invalidLogin = false
+} else {
+  this.invalidLogin = true
+}
+}
+
+} 
+
+
+#login component.html
+User Name : <input type="text" name="username" [(ngModel)]="username">
+Password  : <input type="password" name="passwrord" [(ngModel)]="password">
+
+User Name : {{username}}
+
+<button (click)=handleLogin()>Login</button>
+ 
+
+
+
+
+#login component.spec.ts
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { LoginComponent } from './login.component';
+
+describe('LoginComponent', () => {
+  let component: LoginComponent;
+  let fixture: ComponentFixture<LoginComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [ LoginComponent ]
+    })
+    .compileComponents();
+  });
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(LoginComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});
+
+
+
+#app.component.ts
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  //template: '<h1>{{title}}<h1>',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  title = 'todo';
+  message = 'Welcome to in28Minutes';
+}
+
+
+
+#app.module.ts
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import {FormsModule} from '@angular/forms';
+
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+import { WelcomeComponent } from './welcome/welcome.component';
+import { LoginComponent } from './login/login.component';
+import {ErrorComponent } from './error/error.component';
+import { ListTodosComponent} from './list-todos/list-todos.component';
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    WelcomeComponent,
+    LoginComponent,
+    ErrorComponent,
+    ListTodosComponent
+  ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    FormsModule
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+
+
+
+#error.components.ts
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-error',
+  templateUrl: './error.component.html',
+  styleUrls: ['./error.component.css']
+})
+export class ErrorComponent implements OnInit {
+
+  errorMessage = 'An Error Occured! Contact Support at *** - ***'
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+}
+
+# logout.component.ts
+import { HardcodedAuthenticationService } from './../service';
+import { component, OnInIt } from '@angular/core';
+import { HardcodedAuthenticationService } from '../service/hardcoded-authentication.service';
+@Component({
+  selector: 'app-logout',
+  templateUrl: './logout.component.html',
+  styleUrls: ['./logout.component.css']
+})
+export class LogoutComponent implements OnInit {
+
+  constructor() { }
+  private hardcodedAuthenticationService: HardcodedAuthenticationService
+
+  ngOnInit(): void {
+    this.hardcodedAuthenticationService.logout();
+  }
+
+}
+
+# route-guard.service.ts
+import { Component, OnInit } from '@angular/core';
+import { HardcodedAuthenticationService } from '../service/hardcoded-authentication.service';
+
+@Component({
+  selector: 'app-route-guard.service',
+  templateUrl: './route-guard.service.component.html',
+  styleUrls: ['./route-guard.service.component.css']
+})
+export class RouteGuard.ServiceComponent implements OnInit {
+
+  constructor() { }
+  private hardcodedAuthenticationService: HardcodedAuthenticationService
+  private router: Router) {
+
+  }
+
+  ngOnInit(): void {
+  }
+
+}
+
+# app.routing module
+import { WelcomeComponent } from './welcome/welcome.component';
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { LoginComponent } from './login/login.component';
+import { ErrorComponent } from './error/error.component';
+
+//welcome
+const routes: Routes = [
+  { path:'', component: LoginComponent},
+  { path:'login', component: LoginComponent}
+  { path:'welcome', component: WelcomeComponent}
+  { pah:'**', component: ErrorComponent}
+];
+
+@NgModule({
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule]
+})
+export class AppRoutingModule { 
+
+
+#cmd
+C:\Users\amanat> ng version
+
+     _                      _                 ____ _     ___
+    / \   _ __   __ _ _   _| | __ _ _ __     / ___| |   |_ _|
+   / △ \ | '_ \ / _` | | | | |/ _` | '__|   | |   | |    | |
+  / ___ \| | | | (_| | |_| | | (_| | |      | |___| |___ | |
+ /_/   \_\_| |_|\__, |\__,_|_|\__,_|_|       \____|_____|___|
+                |___/
+
+
+Angular CLI: 11.2.3
+Node: 14.16.0
+OS: win32 x64
+
+Angular:
+...
+Ivy Workspace:
+
+Package                      Version
+------------------------------------------------------
+@angular-devkit/architect    0.1102.3 (cli-only)
+@angular-devkit/core         11.2.3 (cli-only)
+@angular-devkit/schematics   11.2.3 (cli-only)
+@schematics/angular          11.2.3 (cli-only)
+@schematics/update           0.1102.3 (cli-only)
+
+
+C:\Users\amanat> cd todo
+
+C:\Users\amanat\todo> ng generate component error
+CREATE src/app/error/error.component.html (20 bytes)
+CREATE src/app/error/error.component.spec.ts (619 bytes)
+CREATE src/app/error/error.component.ts (271 bytes)
+CREATE src/app/error/error.component.css (0 bytes)
+UPDATE src/app/app.module.ts (635 bytes)
+
+C:\Users\amanat\todo> ng generate component listTodos
+CREATE src/app/list-todos/list-todos.component.html (25 bytes)
+CREATE src/app/list-todos/list-todos.component.spec.ts (648 bytes)
+CREATE src/app/list-todos/list-todos.component.ts (290 bytes)
+CREATE src/app/list-todos/list-todos.component.css (0 bytes)
+UPDATE src/app/app.module.ts (731 bytes)
+
+C:\Users\amanat\todo> ng generate component menu
+CREATE src/app/menu/menu.component.html (19 bytes)
+CREATE src/app/menu/menu.component.spec.ts (612 bytes)
+CREATE src/app/menu/menu.component.ts (267 bytes)
+CREATE src/app/menu/menu.component.css (0 bytes)
+UPDATE src/app/app.module.ts (805 bytes)
+
+C:\Users\amanat\todo> ng generate component footer
+CREATE src/app/footer/footer.component.html (21 bytes)
+CREATE src/app/footer/footer.component.spec.ts (626 bytes)
+CREATE src/app/footer/footer.component.ts (275 bytes)
+CREATE src/app/footer/footer.component.css (0 bytes)
+UPDATE src/app/app.module.ts (887 bytes)
+
+C:\Users\amanat\todo> ng generate service hardcodedAuthentication
+CREATE src/app/hardcoded-authentication.service.spec.ts (443 bytes)
+CREATE src/app/hardcoded-authentication.service.ts (152 bytes)
+
+C:\Users\amanat\todo> ng generate service service/hardcodedAuthentication
+CREATE src/app/service/hardcoded-authentication.service.spec.ts (443 bytes)
+CREATE src/app/service/hardcoded-authentication.service.ts (152 bytes)
