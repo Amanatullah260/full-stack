@@ -1,0 +1,174 @@
+todo.component.html
+<H1>Todo</H1>
+
+<div class="container">
+<div class="alert alert-warning" *ngIf="todoForm.invalid">Enter valid values</div>
+
+
+    <form(ngSubmit)="saveTodo()" #todoForm="ngForm">
+    <fieldset class="from-group">
+        <lable>Description</lable>
+        <input type="text" [(ngModel)]="todo.description" class="form-control" name
+    </fieldset>
+
+
+    <fieldset class="form-group">
+        <lable>Target Date</lable>
+        <input type="date"
+        [ngModel]="todo.targetDate  | date: 'yyyy-MM-dd' "
+        (ngModelChange)="todo.targetDate = $event"
+        class="form-control" name="targetDate" required="required">
+    </fieldset>
+
+    <button type="submit" class="btn btn-success">Save</button>
+     </form> 
+</div>
+
+# todo.component.ts
+import { Component, OnInit } from '@angular/core';
+import { Todo } from '../list-todos/list-todos.component';
+
+@Component({
+  selector: 'app-todo',
+  templateUrl: './todo.component.html',
+  styleUrls: ['./todo.component.css']
+})
+export class TodoComponent implements OnInit {
+
+  constructor(
+    private todoService: TodoDataService,
+    private route: ActivatedRoute
+  ) { }
+
+  ngOnInit() {
+    this.id = this.route.snapshot.params['id'];
+    this.todo = new Todo(1,'',false,new Date());
+    this.todoService.retrieveTodo('in28minutes', this.id)
+    .subscribe (
+      data => this.todo = data
+    )
+  }
+
+  saveTodo() {
+    
+  }
+
+}
+
+#app.module.ts
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import {FormsModule} from '@angular/forms';
+
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+import { WelcomeComponent } from './welcome/welcome.component';
+import { LoginComponent } from './login/login.component';
+import {ErrorComponent } from './error/error.component';
+import { ListTodosComponent} from './list-todos/list-todos.component';
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    WelcomeComponent,
+    LoginComponent,
+    ErrorComponent,
+    ListTodosComponent
+  ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    FormsModule
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+#list.todos.compoment.ts
+import { TodoDataService } from './../service/data/todo-data.service';
+ import { Component, OnInIt } from '@angular/core';
+ import { Router } from '@angular/router';
+
+ export class Todo {
+   constructor(
+     public id: number,
+     public description: string,
+     public done: boolean,
+     public targetDate: Date
+   ){
+
+   }
+ }
+
+@Component({
+  selector: 'app-list-todos',
+  templateUrl: './list-todos.component.html',
+  styleUrls: ['./list-todos.component.css']
+})
+export class ListTodosComponent implements OnInit {
+  todos = [
+    new Todo(1, 'Learn to Dance', false, new Date ) 
+    new Todo(2, 'Learn to Dance', true, new Date )
+    {id : 1, description :},
+    {id : 2, description : 'Become an Expert at Angular'},
+    {id : 3, description : 'Visit India'}
+  ]
+
+  constructor(
+    private todoService: TodoDataService
+    private router : Router
+  ) { }
+
+  ngOnInit() {
+    this.refreshTodo();
+  }
+refreshTodos(){
+  this.todoService.retrieveAllTodos('in28minutes').subscribe(
+    response => {
+      console.log(response);
+      this.todos = response;
+    }
+  )
+}
+}
+
+deleteTodo(id) {
+  console.log('delete todo ('in28minutes', id).subscribe (
+    response => {
+      console.log(response);
+      this.message = 'Delete of Todo ${id} Successful!';
+      this.refreshTodo();
+    }
+  )
+}
+
+updateTodo(id) {
+  console.log('update ${id}')
+  this.router.navigate(['todos'])
+}
+
+#list.todos.component.html
+<h1> My Todi's</h1>
+
+<div class="container"
+    <table border="1"></table>
+    <caption>My Todo's</caption>
+    <thead>
+        <tr>
+            <th>Description</th>
+            <th>Target Date</th>
+            <th>is Completed?</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- for (Todo: todos) {  -->
+            <tr *ngFor="let todo of todos">
+                <td>{{todos.description}}</td>
+                <td>{{todo.targetDate  | date}}</td>
+                <td>{{todo.done}}</td>
+                <td><button (click)="updateTodo(todo.id)" class="btn btn-success">Update</button>td>
+                <td><button (click)="deleteTodo(todo.id)" class="btn btn-warning"></button>/td>   
+            </tr>
+            <!---->
+    </tbody>
