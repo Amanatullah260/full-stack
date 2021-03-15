@@ -1,0 +1,253 @@
+package com.in28minutes.rest.webservices.restfulwebservices.todo;
+
+import java.net.URI;
+
+@CrossOrigin(origins="http://localhost:4200")
+@RestController
+public class TodoJpaResource {
+
+	@Autowired
+	private TodoHardcodedService todoService;
+	
+	@Autowired
+	private TodoJpaRepository todoJpaRepository;
+	
+	@GetMapping("/jpa/users/{username}/todos")
+	public List<Todo> getAllTodos(@pathVariable String username) {
+		return todoService.findAll();
+	}
+	@GetMapping("/jpa/users/{username}/todos/{id}")
+	public Todo getTodo(@pathVariable String username, @PathVariable long id) {
+		return todoService.findById(id);
+	}
+	
+	//DELETE /users/{username}/todos/{id}
+	@DeleteMapping("/jpa/users/{username}/todos/{id}")
+	public ResponseEntity<Void> deleteTodo(
+			@PathVariable String username, @PathVariable long id){
+		
+		Todo todo = todoService.deleteById(id);
+		
+		if(todo!=null) {
+			return ResponseEntity.noContent().build();
+		}
+		return ResponseEntity.notFound().build();
+		
+		
+	}
+	
+	//Edit/Update a Todo
+	//PUT /users/{user-name}/todos/{todo-id}
+	@PutMapping("/jpa/users/{username}/todos")
+	public ResponseEntity<Void> updateTodo(
+			@PathVariable String username, @RequestBody Todo todo){
+		
+		Todo todoUpdate = todoService.save(todo);
+		
+		return new ResponseEntity<Todo>(todo,HttpStatus.OK);
+	}
+	@PostMapping("/jpa/users/{username}/todos")
+	public ResponseEntity<Void> updateTodo(
+			@PathVariable String username, @RequestBody Todo todo) {
+		
+		Todo createdTodo = todoService.save(todo);
+		
+		//Location
+		//Get current resource url
+		///{id}
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest();
+		.path("/{id}").buildAndExpand(createdTodo.getId()).toUri();
+		
+		return ResponseEntity.created(uri).build();
+	}
+	
+	
+}
+
+
+package com.in28minutes.rest.webservices.restfulwebservices.todo;
+
+import java.util.Date;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+
+
+@Entity
+public class Todo {
+	
+	
+    @Id
+	private long id;
+	
+	private String username;
+	private String description;
+	private Date targetDate;
+	private boolean isDone;
+	
+	protected Todo() {
+}
+	
+	public Todo(long id, String username, String derscription, Date targetDate, boolean isDone) {
+	super();
+	this.id = id;
+	this.username = username;
+	this.description = description;
+	this.targetDate = targetDate;
+	this.isDone = isDone;
+	}
+	
+	public long getId() {
+		this.id;
+	}
+	
+	public void setId(long id) {
+		this.id = id;
+	}
+	
+	public String getUsername() {
+		return username;
+		
+	}
+	
+	public void setUsername(String username) {
+		this.username = username;
+	}
+	
+	
+	
+	
+import {HttpInterceptor, HttpHandler, HttpRequest } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { nextTick } from 'node:process';
+
+
+@Injectable({
+  providedIn: 'root'
+})
+export class HttpIntercepterBasicAuthService implements HttpInterceptor{
+
+  constructor(
+    private basicAuthenticationService : BasicAuthenticationService
+  ) { }
+
+intercept(request: HttpRequest<any>, next: HttpHandler) {
+  //let username = 'in28minutes'
+  //let password = 'dummy'
+  //let basicAuthHeaderString = 'Basic ' + window.btoa(username + ':' + password)
+let basicAuthHeaderString = this.basicAuthenticationService.getAuthenticationToken();
+let username = this.basicAuthenticationService.getAuthenticationUser()
+
+if(basicAuthHeaderString && username)
+
+
+  request = request.clone({
+    setHeaders : {
+      Authorization : basicAuthHeaderString
+    
+  })
+}
+
+return nextTick.handle(request);
+
+}
+
+
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import {Todo } from '../../list-todos/list-todos.component';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class TodoDataService {
+
+  constructor(
+    private http:HttpClient
+  ) { }
+
+  retrieveAllTodos(username) {
+    return this.http.get<Todo[]>('${API_URL}/users/${username}/todos');
+    //console.log("Execute Hello World Bean Service")
+  }
+
+  deleteTodo(username, id) {
+    return this,http.delete('${API_URL}/users/${username}/todos/${')
+  }
+
+
+  retrieveTodo(username,id) {
+    return this.http.get<Todo>('${API_URL}/users/${username}/todo/${')
+  }
+
+updateTodo(username, id, todo) {
+  return this.http.put(
+    '${API_URL}/users/${username}/todos/${id}'
+                                      , todo);
+  
+}
+
+}
+
+
+
+import { HttpHeaders, HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import {map} from 'rxjs/operators';
+
+export const TOKEN =
+export const AUTHENTICATED_USER
+
+@Injectable({
+  providedIn: 'root'
+})
+export class BasicAuthenticationService {
+
+  constructor(private http: HttpClient) { }
+
+  executeAuthenticationService(username, password) {
+
+    let basicAuthHeaderString = 'Basic ' + window.btoa(username + ':' + password)
+
+    let headers = new HttpHeaders({
+      Authorization: basicAuthHeaderString
+    })
+
+    return this.http.get<AuthenticationBean>(
+      'http://localhost:8080/basicauth',
+      {headers}).pipe(
+        map(
+          data => {
+            sessionStorage.setItem('authenticaterUser', username);
+            sessionStorage.setItem('token', basicAuthHeaderString);
+            return data;
+          }
+        )
+      );
+    //console.log("Execute Hello World Bean Service")
+  }
+
+  getAuthenticatedUser() {
+    return.sessionStorage.getItem('authenticaterUser')
+  }
+
+getAuthenticatedToken() {
+  if(this.getAuthenticatedUser())
+  return sessionStorage.getItem('TOKEN')
+}
+
+isUserLoggedIn() {
+  let user = sessionStorage.getItem('authenticatedUser')
+  return !(user === null)
+}
+
+logout() {
+  sessionStorage.removeItem('authenticaterUser')
+  sessionStorage.removeItem(TOKEN)
+}
+
+}
+
+
+export class AuthenticationBean {
+  constructor(public message:string) { }
